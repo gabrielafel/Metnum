@@ -59,6 +59,7 @@ def simpson_1per3(fx , a , b , n):
     return simpson_sepertiga
 
 # Lambda Error (fungsi error)
+# dibuat fungsi biar tinggal dipanggil pas buat error
 error = lambda integral_eksak , integral_approk : abs((integral_eksak - integral_approk)/integral_eksak) * 100
 
 class App():
