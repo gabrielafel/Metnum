@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+
 import tkinter as tk
 import scipy.integrate as integral
 import matplotlib
@@ -98,6 +99,24 @@ class App():
         self.error_simpson = tk.Entry(window)
         self.error_simpson.grid(row=6, column=5)
         
+        # Hasil Akhir Trapesium
+        tk.Label(window , text="Trapesium :").grid(row = 31 , column=0 , sticky='e')
+        self.hasil_akhir_trape = tk.Label(window)
+        self.hasil_akhir_trape.grid(row=31 , column=1 , sticky='e')
+        
+        tk.Label(window , text="Segmen :").grid(row = 32 , column=0 , sticky='e')
+        self.segmen_akhir_trape = tk.Label(window)
+        self.segmen_akhir_trape.grid(row=32 , column=1 , sticky='e')
+        
+        # Hasil Akhir Simpson 1/3
+        tk.Label(window , text="Simpson 1/3 :").grid(row = 31 , column=4 , sticky='e')
+        self.hasil_akhir_simpson = tk.Label(window)
+        self.hasil_akhir_simpson.grid(row=31 , column=5 , sticky='e')
+        
+        tk.Label(window , text="Segmen :").grid(row = 32 , column=4 , sticky='e')
+        self.segmen_akhir_simpson = tk.Label(window)
+        self.segmen_akhir_simpson.grid(row=32 , column=5 , sticky='e')
+        
         # Plotting Matlplotlib figure (Untuk menampilkan figurenya)
         self.figure = matplotlib.figure.Figure(figsize=(5, 4), dpi=100)
         self.plot_value = self.figure.add_subplot(211)
@@ -120,11 +139,14 @@ class App():
     
     # Untuk memanggil button Calculate Trapesium
     def Integral_trapesium(self):
-        
+        try:
         # Dipanggil dari Entry menggunakan get dan conversi float karena method get merupakan string 
-        a_trape = float(self.a_trapesium.get())
-        b_trape = float(self.b_trapesium.get())
-        error_trape = float(self.error_trapesium.get())
+            a_trape = float(self.a_trapesium.get())
+            b_trape = float(self.b_trapesium.get())
+            error_trape = float(self.error_trapesium.get())
+        except ValueError:
+            tk.messagebox.showinfo(title = "Calculate Error" , message = "Maaf , mohon masukkan angka terlebih dahulu")
+        
         
         # Hanya bisa dilakukan di fungsi bukan di Textbox nya
         cobatestintegral , error_scipy = integral.quad(fx, a_trape , b_trape)
@@ -168,13 +190,17 @@ class App():
         
         masukin_hasil_akhir = hasil_Int_trape[len(hasil_Int_trape) - 1]
         masukin_segmen_akhir = segmen_N_trape[len(segmen_N_trape) - 1]
+        self.hasil_akhir_trape.config(text = masukin_hasil_akhir)
+        self.segmen_akhir_trape.config(text = masukin_segmen_akhir)
     
     # Untuk memanggil button Calculate simpson 1/3
     def Integral_Simpson_sepertiga(self):
-        
-        a_simpson_sepertiga = float(self.a_simpson.get())
-        b_simpson_sepertiga = float(self.b_simpson.get())
-        error_simpson_sepertiga = float(self.error_simpson.get())
+        try:
+            a_simpson_sepertiga = float(self.a_simpson.get())
+            b_simpson_sepertiga = float(self.b_simpson.get())
+            error_simpson_sepertiga = float(self.error_simpson.get())
+        except ValueError:
+            tk.messagebox.showinfo(title = "Calculate Error" , message = "Maaf , anda belom menginput semua variable di salah satu metode")
         
         cobatestintegral , error_scipy = integral.quad(fx, a_simpson_sepertiga , b_simpson_sepertiga)
         
@@ -220,16 +246,24 @@ class App():
                 
             else:
                 n = n + 1
+        
+        masukin_hasil_akhir = hasil_integrate_simpson_sepertiga[len(hasil_integrate_simpson_sepertiga) - 1]
+        masukin_segmen_akhir = segmen_N_simpson_sepertiga[len(segmen_N_simpson_sepertiga) - 1]
+        self.hasil_akhir_simpson.config(text = masukin_hasil_akhir)
+        self.segmen_akhir_simpson.config(text = masukin_segmen_akhir)
     
     # Untuk memanggil button Calculate Gabungan Trapesium dan simpson 1/3
     def Calculate_Integral_Gabungan(self):
-        a_trape = float(self.a_trapesium.get())
-        b_trape = float(self.b_trapesium.get())
-        error_trape = float(self.error_trapesium.get())
+        try :
+            a_trape = float(self.a_trapesium.get())
+            b_trape = float(self.b_trapesium.get())
+            error_trape = float(self.error_trapesium.get())
         
-        a_simpson_sepertiga = float(self.a_simpson.get())
-        b_simpson_sepertiga = float(self.b_simpson.get())
-        error_simpson_sepertiga = float(self.error_simpson.get())
+            a_simpson_sepertiga = float(self.a_simpson.get())
+            b_simpson_sepertiga = float(self.b_simpson.get())
+            error_simpson_sepertiga = float(self.error_simpson.get())
+        except ValueError:
+            tk.messagebox.showinfo(title = "Calculate Error" , message = "Maaf , anda belom menginput semua variable di salah satu metode")
         
         cobatestintegral_trape , error_scipy = integral.quad(fx, a_trape , b_trape)
         cobatestintegral_simpson , error_scipy = integral.quad(fx, a_simpson_sepertiga , b_simpson_sepertiga)
@@ -300,10 +334,21 @@ class App():
             old = self.canvas_plot
             self.canvas_plot = FigureCanvasTkAgg(self.figure, self.app_utama)
             self.canvas_plot.get_tk_widget().grid(row=12,column=2,rowspan=12,columnspan=2)
-            old.get_tk_widget().destroy()            
+            old.get_tk_widget().destroy()    
             
+        ## Untuk Hasil akhir Trapesium dan Simpson dalam Label 
+        masukin_hasil_akhir_trape = hasil_Int_trape[len(hasil_Int_trape) - 1]
+        masukin_segmen_akhir_trape = segmen_N_trape[len(segmen_N_trape) - 1]
+        masukin_hasil_akhir_simpson = hasil_integrate_simpson_sepertiga[len(hasil_integrate_simpson_sepertiga) - 1]
+        masukin_segmen_akhir_simpson = segmen_N_simpson_sepertiga[len(segmen_N_simpson_sepertiga) - 1]
+        
+        ## Untuk Dimasukkan ke Label
+        self.hasil_akhir_trape.config(text = masukin_hasil_akhir_trape)
+        self.segmen_akhir_trape.config(text = masukin_segmen_akhir_trape)
+        self.hasil_akhir_simpson.config(text = masukin_hasil_akhir_simpson)
+        self.segmen_akhir_simpson.config(text = masukin_segmen_akhir_simpson)
+                    
 App()
-
 
 
 
